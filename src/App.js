@@ -21,29 +21,36 @@ const App = () => {
       [1, 4, 7],
       [2, 5, 8]
     ]
+    let winner = null;
 
     winningCombos.forEach(array => {
-      let circleWins = array.every(cell => cells[cell] === "circle")
-
-      if (circleWins) {
-        setWinningMessage("Circle Wins!")
-        return
+      if (cells[array[0]] === cells[array[1]] && cells[array[1]] === cells[array[2]] && cells[array[0]] !== '') {
+        winner = cells[array[0]];
       }
     })
 
-    winningCombos.forEach(array => {
-      let crossWins = array.every(cell => cells[cell] === "cross")
-
-      if (crossWins) {
-        setWinningMessage("Cross Wins!")
-        return
-      }
-    })
+    if (winner !== null) {
+      setWinningMessage(`${winner} Wins!`);
+    }
+    else if (cells.every(cell => cell !== '')) {
+      setWinningMessage("It's a draw!");
+    }
   }
 
   useEffect(() => {
     checkScore()
   }, [cells])
+
+  const handleCellChange = (className, id) => {
+    const nextCells = cells.map((cell, index) => {
+      if (index === id) {
+        return className
+      } else {
+        return cell
+      }
+    });
+    setCells(nextCells)
+  };
 
   return (
     <div className="app">
@@ -57,11 +64,12 @@ const App = () => {
             go={go}
             setGo={setGo}
             cells={cells}
-            winningMessage={winningMessage} />)}
+            winningMessage={winningMessage}
+            handleCellChange={handleCellChange} />)}
       </div>
       <p>{winningMessage || message}</p>
     </div>
   )
-};
+}
 
 export default App;
